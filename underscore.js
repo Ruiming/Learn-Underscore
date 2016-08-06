@@ -1580,12 +1580,22 @@
   eq = function(a, b, aStack, bStack) {
     // Identical objects are equal. `0 === -0`, but they aren't identical.
     // See the [Harmony `egal` proposal](http://wiki.ecmascript.org/doku.php?id=harmony:egal).
+    // 0 === -0 但是他们不是完全一样的
+    // Infinity !== -Infinity 
+    // 1/0 === Infinity, -1/0 === -Infinity
     if (a === b) return a !== 0 || 1 / a === 1 / b;
     // A strict comparison is necessary because `null == undefined`.
+    // 注意null == undefined
     if (a == null || b == null) return a === b;
     // `NaN`s are equivalent, but non-reflexive.
+    // NaN !== NaN，这里让他们相等
     if (a !== a) return b !== b;
+    // 上面已经对原子类型进行了判断，到下面来的话ab之间必有一个为function或object
     // Exhaust primitive checks
+    // [typeof](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/typeof)
+    // typeof NaN === 'number'            typeof [1, 2, 3] === 'object' 
+    // typeof new Date() === 'object'     typeof class C {} === 'function'
+    // typeof null === 'object'
     var type = typeof a;
     if (type !== 'function' && type !== 'object' && typeof b != 'object') return false;
     return deepEq(a, b, aStack, bStack);
@@ -1594,10 +1604,12 @@
   // Internal recursive comparison function for `isEqual`.
   deepEq = function(a, b, aStack, bStack) {
     // Unwrap any wrapped objects.
+    // Underscore对象判等
     if (a instanceof _) a = a._wrapped;
     if (b instanceof _) b = b._wrapped;
     // Compare `[[Class]]` names.
     var className = toString.call(a);
+    // 具体类别不同返回false
     if (className !== toString.call(b)) return false;
     switch (className) {
       // Strings, numbers, regular expressions, dates, and booleans are compared by value.
@@ -1629,6 +1641,7 @@
 
       // Objects with different constructors are not equivalent, but `Object`s or `Array`s
       // from different frames are.
+      // 两个对象来自不同的构造器，则这两个对象不相同
       var aCtor = a.constructor, bCtor = b.constructor;
       if (aCtor !== bCtor && !(_.isFunction(aCtor) && aCtor instanceof aCtor &&
                                _.isFunction(bCtor) && bCtor instanceof bCtor)
@@ -1905,9 +1918,9 @@
   // following template settings to use alternative delimiters.
   // 支持三种模板匹配
   _.templateSettings = {
-    evaluate: /<%([\s\S]+?)%>/g,
-    interpolate: /<%=([\s\S]+?)%>/g,
-    escape: /<%-([\s\S]+?)%>/g
+    evaluate: /<%([\s\S]+?)%>/g,        // 执行替换
+    interpolate: /<%=([\s\S]+?)%>/g,    // 值替换
+    escape: /<%-([\s\S]+?)%>/g          // 转义替换
   };
 
   // When customizing `templateSettings`, if you don't want to define an
@@ -2081,7 +2094,5 @@
 }());
 
 // TODO:
-// - AMD CMD
 // - 模板处理
 // - 深度复制
-

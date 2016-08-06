@@ -26,6 +26,5 @@ Underscore 源码学习
 
 TODO:
 - AMD和CMD加载
-- 深度复制
 - 模板处理
 

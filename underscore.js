@@ -741,6 +741,8 @@
   // Internal implementation of a recursive `flatten` function..
   // 解嵌套
   // 如果给了shallow参数则只减少一维
+  // strict为true只和shallow为true一起使用，否则返回[]
+  // 
   var flatten = function(input, shallow, strict, output) {
     output = output || [];
     var idx = output.length;
@@ -779,6 +781,7 @@
   // _.without([1, 2, 1, 0, 3, 1, 4], 0, 1);
   // => [2, 3, 4]
   // 返回删除所有otherArrays值后的array副本
+  // 与difference的区别在于difference接收两个数组而withour直接接收数
   _.without = restArgs(function(array, otherArrays) {
     return _.difference(array, otherArrays);
   });
@@ -786,6 +789,9 @@
   // Produce a duplicate-free version of the array. If the array has already
   // been sorted, you have the option of using a faster algorithm.
   // Aliased as `unique`.
+  // 对于已排序的数组，传入isSorted可以使用更快的算法，处理对象元素可以传递iteratee
+  // _.uniq([1, 2, 1, 3, 1, 4]);
+  // => [1, 2, 3, 4]
   _.uniq = _.unique = function(array, isSorted, iteratee, context) {
     if (!_.isBoolean(isSorted)) {
       context = iteratee;
@@ -799,6 +805,7 @@
       var value = array[i],
           computed = iteratee ? iteratee(value, i, array) : value;
       if (isSorted) {
+        // 若seen等于computed表示前面已经出现过一次了，则忽略
         if (!i || seen !== computed) result.push(value);
         seen = computed;
       } else if (iteratee) {
@@ -818,13 +825,15 @@
   // 返回多个数组的并集
   // _.union([1, 2, 3], [101, 2, 1, 10], [2, 1]);
   // => [1, 2, 3, 101, 10]
-  // 这里flatten传入了strict为true并且shallow也为true
   _.union = restArgs(function(arrays) {
     return _.uniq(flatten(arrays, true, true));
   });
 
   // Produce an array that contains every item shared between all the
   // passed-in arrays.
+  // 返回传入array的多个数组的交集
+  // _.intersection([1, 2, 3], [101, 2, 1, 10], [2, 1])
+  // => [1, 2]
   _.intersection = function(array) {
     var result = [];
     var argsLength = arguments.length;
@@ -832,6 +841,8 @@
       var item = array[i];
       if (_.contains(result, item)) continue;
       var j;
+      // 从第二个数组判断，如果后面有一个数组不包含item则跳出
+      // 如果每个数组都包含该item，便把该item push进数组result里面
       for (j = 1; j < argsLength; j++) {
         if (!_.contains(arguments[j], item)) break;
       }
@@ -842,13 +853,14 @@
 
   // Take the difference between one array and a number of other arrays.
   // Only the elements present in just the first array will remain.
-  // 只对比数组中的第一层
-  // _.difference([0, 1, 2, 3, [4]], [0, 1, [4]])
-  // => [2, 3, [4]]
+  // 求差集
+  // 如果是_.without方法调用，rest已经是一个数组，这里通过restArgs加了一层又解掉
+  // 如果单独调用这个办法，rest可能是多个数组，通过restArgs加了一层，然后通过flatten解掉
+  // [1, 2, 3] => [[1, 2, 3]] => [1, 2, 3]
+  // [1, 2, 3], [2, 3, 4] => [[1, 2, 3], [2, 3, 4]] => [1, 2, 3, 2, 3, 4]
   _.difference = restArgs(function(array, rest) {
-    // 这里调用flatten方法，shallow和strict都为true
-    // [0, 1] => 
     rest = flatten(rest, true, true);
+    // 遍历array，如果array中一个元素包含在rest中，则去掉该元素
     return _.filter(array, function(value){
       return !_.contains(rest, value);
     });
@@ -2072,5 +2084,4 @@
 // - AMD CMD
 // - 模板处理
 // - 深度复制
-// - flatten
 

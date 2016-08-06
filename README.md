@@ -22,6 +22,7 @@ Underscore 源码学习
 - [Underscore createReduce函数](https://ruiming.github.io/2016/08/01/Underscore%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0(%E5%9B%9B)/)
 - [Underscore throttle 和 debounce](https://ruiming.github.io/2016/08/04/Underscore%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0(%E4%BA%94)/)
 - [Underscore mixin 方法和 OOP 编程](https://ruiming.github.io/2016/08/05/Underscore%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0(%E5%85%AD)/)
+- [Underscore flatten 相关方法](https://ruiming.github.io/2016/08/06/Underscore%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0(%E4%B8%83)/)
 
 TODO:
 - flatten

@@ -25,6 +25,6 @@ Underscore 源码学习
 - [Underscore flatten 相关方法](https://ruiming.github.io/2016/08/06/Underscore%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0(%E4%B8%83)/)
 
 TODO:
-- AMD和CMD加载
+
 - 模板处理
 
